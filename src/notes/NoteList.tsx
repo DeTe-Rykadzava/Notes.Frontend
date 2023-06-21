@@ -1,17 +1,15 @@
-import { FC, ReactElement, useRef, useEffect, useState} from 'react';
-import { CreateNoteDto, Client, NoteLookupDto } from '../../../notes.frontendv2/src/api/api';
+import React, { FC, ReactElement, useRef, useEffect, useState } from 'react';
+import { CreateNoteDto, Client, NoteLookupDto } from '../api/api';
 import { FormControl } from 'react-bootstrap';
-import React from 'react';
 
-const apiClient = new Client('http://localhost:5223/');
+const apiClient = new Client('https://localhost:7076/');
 
 async function createNote(note: CreateNoteDto) {
     await apiClient.createNote('1.0', note);
     console.log('Note is created.');
 }
 
-const NoteList: FC<{}> = (): ReactElement =>
-{
+const NoteList: FC<{}> = (): ReactElement => {
     let textInput = useRef(null);
     const [notes, setNotes] = useState<NoteLookupDto[] | undefined>(undefined);
 
@@ -20,38 +18,33 @@ const NoteList: FC<{}> = (): ReactElement =>
         setNotes(noteListVm.notes);
     }
 
-    useEffect(() =>
-    {
-        getNotes();
-
+    useEffect(() => {
+        setTimeout(getNotes, 500);
     }, []);
 
-    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => 
-    {
-        if(event.key === 'Enter')
-        {
-            const note: CreateNoteDto = 
-            {
-                title: event.currentTarget.value
-            }
+    const handleKeyPress = (event: React.KeyboardEvent<HTMLInputElement>) => {
+        if (event.key === 'Enter') {
+            const note: CreateNoteDto = {
+                title: event.currentTarget.value,
+            };
             createNote(note);
             event.currentTarget.value = '';
-            getNotes();
+            setTimeout(getNotes, 500);
         }
-    }
+    };
 
     return (
+        <div>
+            Notes
             <div>
-                Notes
-                <div>
-                    <FormControl ref={textInput} onKeyPress={handleKeyPress}/>
-                </div>
-                <div>
-                    {notes?.map(note => (
-                        <div>{note.title}</div>
-                    ))}
-                </div>
+                <FormControl ref={textInput} onKeyPress={handleKeyPress} />
             </div>
+            <section>
+                {notes?.map((note) => (
+                    <div>{note.title}</div>
+                ))}
+            </section>
+        </div>
     );
 };
 export default NoteList;

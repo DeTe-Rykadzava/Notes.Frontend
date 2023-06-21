@@ -16,13 +16,16 @@ const App: FC<{}> = (): ReactElement => {
   return (
     <div className="App">
       <header className="App-header">
-        <button onClick={() => signinRedirect()}>Login</button>
+        <div >
+          <button onClick={() => signinRedirect()}>Login</button>
+          <button onClick={() => signoutRedirect()}>Logout</button>
+        </div>
         <AuthProvider userManager={userManager}>
           <Router>
             <Routes>
-              <Route path="/" element={<NoteList/>}/>
-              <Route path='/signout-oidc' element={<SignoutOidc/>} />
-              <Route path='/signin-oidc' element={<SigninOidc/>}/>
+              <Route path="/" Component={NoteList}/>
+              <Route path='/signout-oidc' Component={SignoutOidc} />
+              <Route path='/signin-oidc' Component={SigninOidc}/>
             </Routes>
           </Router>
         </AuthProvider>
